@@ -1,0 +1,46 @@
+---
+author: "Mehmet K. Turkcan"
+date: 2020-07-08
+katex: true
+markup: "mmark"
+linktitle: Towards Building Noise-Ignoring Deep Neural Networks via Neural Architecture Search
+title: Towards Building Noise-Ignoring Deep Neural Networks via Neural Architecture Search
+---
+
+
+
+In this small late-night project I sought *to automatically discover neural architectures incapable of fitting to random noise*, following an interesting problem from Twitter [1]. Twitter is great as a social platform for academic work!
+
+
+If we have a neural architecture search system that can seek to minimize (or maximize) a given loss function, we can employ such a system to discover neural architectures incapable of fitting to random noise by altering the loss as shown in Figure 1 below.
+
+![Architecture of the Noise-Ignoring Network Search System](nas_auto.svg)
+
+**Figure 1.** Architecture of a general system that can be employed to train models that cannot fit noise. $$X_{train}$$ and $$y_{train}$$ are the training dataset and labels respectively, and $$X_{noise}$$ and $$y_{noise}$$ are the noise dataset and labels. $$\theta$$ is the collection of the trainable model parameters for a given model $$f$$. $$\mathcal{L}$$ is the loss function (for example categorical cross-entropy or validation accuracy) to be minimized or maximized.
+
+##### Why is this interesting?
+It has been shown some time ago that the common networks used in deep learning literature can fit to random noise and random labels just as well [3]. While this is perhaps good for showcasing how capable these networks are, the result consequently shows that these models are not designed specifically to address the problems at hand and as such are not necessarily good fits for understanding how to accurately solve these problems (in the quest to move from black box models to clearly understandable models, or discovering domain-specific neural network architectures). The preliminary results I show on MNIST and CIFAR10 are definitely promising, and I believe these approaches can be expanded to ImageNet with a lot of compute to obtain interesting architectures. Also important is the fact that one does not necessary need to have only noise in this paradigm: one can build networks that specifically do not fit certain types of data (for example, landscape images in a network designed to recognize human faces). The neural architectures with such constraints might make good candidates for analysis and motif research, which today requires manual effort and time. 
+
+##### Results
+Architecture search and hyperparameter tuning tend to be expensive, so for a simple demonstration I sought to focus on two simple classical datasets: MNIST and CIFAR10. The models are given pregenerated uniform noise input with randomly generated labels to fit to. The results are shown below in Table 1. They are preliminary but encouraging for the proposed approach. I note that with a larger number of training epochs (10 in these experiments) one might observe noise fit accuracy to increase, but such problems may be possible to solve with higher compute (more epochs per model and more models to test).
+
+
+**Table 1.** Results for the approach on the MNIST and CIFAR10 datasets over 40 trials.
+
+| Metric                  | MNIST  | CIFAR10 |
+|-------------------------|--------|---------|
+| Test Dataset Accuracy   | 98.04%  | 51.34%   |
+| Training Noise Accuracy | 10.12% | 9.97%   |
+
+
+##### Implementation
+I have used the AutoKeras project (https://autokeras.com/) [2] as a basis and extended the loss calculation logic to enable one to add a regularization term with respect to noise input to introduce the lower loss term shown in the Figure above, so that this prototype can be built in a timely manner. Source code for this project, including code for the experiments shown and links to best models, is available [on GitHub](https://github.com/mkturkcan/NoiseIgnoringNetworks). For sake of efficiency, instead of $$\mathcal{L}(f_{\hat \theta}(X_{train}),y_{train})$$, the implementation computes $$\mathcal{L}(f_{\hat \theta}([X_{train};X_{noise}]),[y_{train};y_{noise}])$$ for the upper loss term. Trained models can be found [here](https://drive.google.com/file/d/1zuaAE7BfvZh2I4TfgeV4l9UQIqsfiUQy/view?usp=sharing).
+
+
+### References:
+
+[1] https://twitter.com/iamtrask/status/1276975022368796674
+
+[2] Jin, H., Song, Q., & Hu, X. (2019, July). Auto-keras: An efficient neural architecture search system. In Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining (pp. 1946-1956).
+
+[3] Zhang, C., Bengio, S., Hardt, M., Recht, B., & Vinyals, O. (2016). Understanding deep learning requires rethinking generalization. arXiv preprint arXiv:1611.03530.
