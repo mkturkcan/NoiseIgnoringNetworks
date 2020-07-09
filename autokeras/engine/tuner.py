@@ -156,6 +156,7 @@ class AutoTuner(kerastuner.engine.tuner.Tuner):
         model = self.hypermodel.build(best_hp)
         self.adapt(model, x)
         del fit_kwargs['add_data']
+        del fit_kwargs['main_data']
         model.fit(x, **fit_kwargs)
         return model
 

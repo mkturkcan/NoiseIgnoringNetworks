@@ -148,8 +148,11 @@ class Tuner(base_tuner.BaseTuner):
         copied_fit_kwargs['callbacks'] = callbacks
         copied_fit_kwargs['verbose'] = False
         add_data = copied_fit_kwargs['add_data']
+        main_data = copied_fit_kwargs['main_data']
         del copied_fit_kwargs['add_data']
+        del copied_fit_kwargs['main_data']
         self.add_data = add_data
+        self.main_data = main_data
         # print('kwargs', add_data)
         # print('kwargs1', fit_args)
         # print('kwargs2', copied_fit_kwargs)
@@ -243,10 +246,12 @@ class Tuner(base_tuner.BaseTuner):
         # Report intermediate metrics to the `Oracle`.
         aux_loss_2 = model.evaluate(self.add_data[0], self.add_data[1])
         aux_loss = {'loss': aux_loss_2[0], 'accuracy': aux_loss_2[1], 'val_loss': aux_loss_2[0], 'val_accuracy': aux_loss_2[1]}
+        main_loss_1 = model.evaluate(self.main_data[0], self.main_data[1])
+        main_loss = {'loss': main_loss_1[0], 'accuracy': main_loss_1[1], 'val_loss': main_loss_1[0], 'val_accuracy': main_loss_1[1]}
         print('auxloss', aux_loss)
         print('logs:', logs)
         for i in aux_loss.keys():
-            logs[i] = logs[i] - aux_loss[i]
+            logs[i] = main_loss[i] - aux_loss[i]
         # print('model:', model)
         # print('model:', model)
         # print('logs:', logs)

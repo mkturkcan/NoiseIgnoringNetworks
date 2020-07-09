@@ -22,9 +22,10 @@ x_test = x_test / np.max(x_test) - 0.5
 x_perms = np.random.permutation(x_all.shape[0])
 x_all = x_all[x_perms,:]
 y_all = y_all[x_perms]
-# Initialize the ImageClassifier
-clf = ak.ImageClassifier(max_trials=40, objective = "val_accuracy", directory = "cifar10_checkpoints")
-# Search for the best model
-clf.fit(x_all, y_all, epochs=10, add_data = (x_noise, to_categorical(y_noise)))
-# Evaluate on the testing data
-print('Accuracy: {accuracy}'.format(accuracy=clf.evaluate(x_test, y_test)))
+# Initialize the ImageClassifier.
+clf = ak.ImageClassifier(max_trials=40, objective='val_accuracy', directory = "/mnt/server-storage/mehmet/cifar10_checkpoints")
+# Search for the best model.
+clf.fit(x_all, y_all, epochs=10, batch_size = 512, main_data = (x_train, to_categorical(y_train)), add_data = (x_noise, to_categorical(y_noise)))
+# Evaluate on the testing data.
+print('Test Accuracy: {accuracy}'.format(accuracy=clf.evaluate(x_test, y_test)))
+print('Noise Accuracy: {accuracy}'.format(accuracy=clf.evaluate(x_noise, y_noise)))
