@@ -34,7 +34,7 @@ Architecture search and hyperparameter tuning tend to be expensive, so for a sim
 
 
 ##### Implementation
-I have used the AutoKeras project (https://autokeras.com/) [2] as a basis and extended the loss calculation logic to enable one to add a regularization term with respect to noise input to introduce the lower loss term shown in the Figure above, so that this prototype can be built in a timely manner. Source code for this project, including code for the experiments shown and links to best models, is available [on GitHub](https://github.com/mkturkcan/NoiseIgnoringNetworks). For sake of efficiency, instead of $$\mathcal{L}(f_{\hat \theta}(X_{train}),y_{train})$$, the implementation computes $$\mathcal{L}(f_{\hat \theta}([X_{train};X_{noise}]),[y_{train};y_{noise}])$$ for the upper loss term. Trained models can be found [here](https://drive.google.com/file/d/1zuaAE7BfvZh2I4TfgeV4l9UQIqsfiUQy/view?usp=sharing).
+I have used the AutoKeras project (https://autokeras.com/) [2] as a basis and extended the loss calculation logic to enable one to add a regularization term with respect to noise input to introduce the lower loss term shown in the Figure above, so that this prototype can be built in a timely manner. Source code for this project, including code for the experiments shown and links to best models, is available [on GitHub](https://github.com/mkturkcan/NoiseIgnoringNetworks). Trained models can be found [here](https://drive.google.com/file/d/1zuaAE7BfvZh2I4TfgeV4l9UQIqsfiUQy/view?usp=sharing).
 
 
 ### References:
